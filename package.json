@@ -1,0 +1,26 @@
+{
+  "name": "bashlist",
+  "version": "0.0.1",
+  "description": "The app that displays to-do list in command-line.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/campykid/bashlist.git"
+  },
+  "keywords": [
+    "to-do",
+    "bash"
+  ],
+  "author": "Vladislav Khvostov @campykid",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/campykid/bashlist/issues"
+  },
+  "homepage": "https://github.com/campykid/bashlist#readme",
+  "dependencies": {
+    "request": "^2.65.0"
+  }
+}
