@@ -1,8 +1,9 @@
 'use strict'
-// Урлы для запростов - https://developer.wunderlist.com/documentation
+// The urls for request - https://developer.wunderlist.com/documentation
 let requestUrls = {
 	tasks: 'a.wunderlist.com/api/v1/tasks?list_id=',
 	lists: 'a.wunderlist.com/api/v1/lists',
+
 	getRequestUrl: function (type, param) {
 		if (param) {
 			let url = 'https://' + this[type] + param;
