@@ -1,4 +1,11 @@
 # bashlist
-The app that displays to-do list in bash command-line.
+The app that displays your to-do list from wunderlist.com/  in command-line like bash.
 
-![gif](https://vk.com/doc15470882_429912574?hash=76e2533adae5094dd3&dl=62e3a31f108a7ee5ca )
+## How to start
+For start execute index.js file.
+```bash
+node bashlist/index.js
+```
+and you'll see all your wunderlist tasks. (You must be authorized on site https://www.wunderlist.com/)
+
+https://raw.githubusercontent.com/campykid/bashlist/master/bashlist.gif
