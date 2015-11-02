@@ -1,7 +1,7 @@
 'use strict';
 let request = require('request');
-let requestUrls = require('request-urls');
-let authKeys = require('auth');
+let requestUrls = require('./lib/request-urls.js');
+let authKeys = require('./lib/auth.js');
 
 let listsUrl = requestUrls.getRequestUrl('lists');
 
