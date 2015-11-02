@@ -8,53 +8,58 @@ let listsUrl = requestUrls.getRequestUrl('lists');
 // Request settings, example - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
 let requesBody = {
  url: listsUrl,
- // Заголовки
  headers: authKeys
 };
 
 
 
-// Sent reques and getting lists.
+// Sent the reques and getting lists.
 request(requesBody, (error, response, body) => {
 
  if (!error && response.statusCode == 200) {
 
-// Парсим ответ, получаем массив из объетов-списков
+// Parse the answer, getting array from objects-lists.
 let answerJSON = JSON.parse(body);
 let allListsId = [];
 let urlForReques = [];
 
 
 	let promise = new Promise((resolve, reject) => {
-	// Получаем массив с идентификаторами от каждого списка.
-	answerJSON.forEach((item, index, array) => {
-		allListsId.push(item.id);
+
+		// Getting the array with ID from each list.
+		answerJSON.forEach((item) => {
+			allListsId.push(item.id);
+		});
+
+		resolve(allListsId);
 	});
-	resolve(allListsId);
-	})
 
 	promise.then((allListsId) => {
 		let tasksRequests = [];
 
 		allListsId.forEach(function (elem) {
-			// Для каждого идентификатора создаем ссылку-запрос.
+			// For each ID make a link-request.
 			tasksRequests.push(requestUrls.getRequestUrl('tasks', elem));
 		})
+
 		return tasksRequests;
+
 	}).then((tasksRequests) => {
-		//
 		let requesBody = {};
-		// Добавляем в тело зпроса штуки для авторизации.
+
+		// Add in the request auth info.
 		requesBody.headers = authKeys;
 
 		tasksRequests.forEach((link) => {
-			// Добавляем в тело зпроса урл
+
+			// Add in the request url.
 			requesBody.url = link;
-			// Делам запрос для каждой ссылки.
+
+			// Doing requst for all links.
 			request(requesBody, (error, response, body) => {
 				let responseJSON = JSON.parse(body);
 					responseJSON.forEach((elem) => {
-					// Выводим в консоль все таски.
+					// Withdraw all the tasks in console.
 					process.stdout.write(elem.title + '\n');
 				})
 			})
