@@ -1,33 +1,20 @@
 'use strict';
 let request = require('request');
-let requestUrls = require('./request-urls.js');
+let requestUrls = require('request-urls');
+let authKeys = require('auth');
 
+let listsUrl = requestUrls.getRequestUrl('lists');
 
-// Скоп приложения.
-let bashlit = {};
-
-
-
-// Штуки для автаризаци - https://developer.wunderlist.com/documentation/concepts/authorization
-bashlit.authKeys = {
-	"X-Access-Token": "8d5596e05ed8de4c4eb5a9654fe5673c98b437f0d7cce23b730e97f0dbdb",
-	"X-Client-ID": "94a0ac48561078fd5530",
-};
-
-
-
-let listsUrl = requestUrls.getRequestUrl('lists')
-
-// Тело запроса. like - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
+// Request settings, example - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
 let requesBody = {
  url: listsUrl,
  // Заголовки
- headers: bashlit.authKeys
+ headers: authKeys
 };
 
 
 
-// Шлем запрос к апи чтобы получить списки.
+// Sent reques and getting lists.
 request(requesBody, (error, response, body) => {
 
  if (!error && response.statusCode == 200) {
@@ -58,7 +45,7 @@ let urlForReques = [];
 		//
 		let requesBody = {};
 		// Добавляем в тело зпроса штуки для авторизации.
-		requesBody.headers = bashlit.authKeys;
+		requesBody.headers = authKeys;
 
 		tasksRequests.forEach((link) => {
 			// Добавляем в тело зпроса урл
