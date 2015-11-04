@@ -18,7 +18,6 @@ let allListsId = new Promise((resolve, reject) => {
 		if (!error && response.statusCode == 200) {
 			// Parse the answer, getting array from objects-lists.
 			let answerJSON = JSON.parse(body);
-			let urlForReques = [];
 			let ids =[];
 
 			// Getting the array with ID from each list.
@@ -58,7 +57,6 @@ allListsId.then(function(ids){
 		// Doing requst for all links.
 		request(requesBody, (error, response, body) => {
 			let responseJSON = JSON.parse(body);
-			let allTasks = [];
 
 			responseJSON.forEach((elem) => {
 				// Withdraw all the tasks in console.
