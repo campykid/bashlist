@@ -15,20 +15,18 @@ let allListsId = new Promise((resolve, reject) => {
 
 	request(requesBody, (error, response, body) => {
 
-		if (!error && response.statusCode == 200) {
-			// Parse the answer, getting array from objects-lists.
-			let answerJSON = JSON.parse(body);
-			let ids =[];
+		if (error || response.statusCode !== 200) error ? console.error(error) : console.log('Status code = ' + resonse.response.statusCode + ' but must be == 200' );
 
-			// Getting the array with ID from each list.
-			answerJSON.forEach((item) => {
-				return ids.push(item.id);
-			});
+		// Parse the answer, getting array from objects-lists.
+		let answerJSON = JSON.parse(body);
+		let ids =[];
 
-			resolve(Promise.all(ids));
-		} else {
-			throw new Error(error);
-		}
+		// Getting the array with ID from each list.
+		answerJSON.forEach((item) => {
+			return ids.push(item.id);
+		});
+
+		resolve(Promise.all(ids));
 	});
 });
 
