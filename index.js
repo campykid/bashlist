@@ -3,18 +3,20 @@ let request = require('request');
 let requestUrls = require('./lib/request-urls.js');
 let authKeys = require('./lib/auth.js');
 
-let listsUrl = requestUrls.getRequestUrl('lists');
+
+var listsUrl = requestUrls.getRequestUrl('lists');
 
 // Request settings, example - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
-let requesBody = {
- url: listsUrl,
- headers: authKeys
+var requesBody = {
+	url: listsUrl,
+	headers: authKeys
 };
 
-let allListsId = new Promise((resolve, reject) => {
+var ids = [];
 
-	request(requesBody, (error, response, body) => {
+var getIdsRequstFunc = () => {
 
+	request(requesBody, (error, response, body)=>{
 		if (error || response.statusCode !== 200) error ? console.error(error) : console.log('Status code = ' + resonse.response.statusCode + ' but must be == 200' );
 
 		// Parse the answer, getting array from objects-lists.
@@ -26,12 +28,14 @@ let allListsId = new Promise((resolve, reject) => {
 			return ids.push(item.id);
 		});
 
-		resolve(Promise.all(ids));
-	});
-});
+		return getTasksRequests(ids);
+	})
+	return getTasksRequests(ids);
 
+}
 
-allListsId.then(function(ids){
+var getTasksRequests = (ids) => {
+
 	let tasksRequests = [];
 
 	ids.forEach(function (id) {
@@ -39,9 +43,12 @@ allListsId.then(function(ids){
 		tasksRequests.push(requestUrls.getRequestUrl('tasks', id));
 	})
 
-	return Promise.all(tasksRequests);
+	getAllTaskst(tasksRequests)
 
-}).then((tasksRequests)=>{
+}
+
+var getAllTaskst = (tasksRequests) => {
+
 	let requesBody = {};
 
 	// Add in the request auth info.
@@ -62,4 +69,6 @@ allListsId.then(function(ids){
 			})
 		})
 	})
-}).catch(console.log.bind(console));
+}
+
+getIdsRequstFunc();
