@@ -28,10 +28,8 @@ var getIdsRequstFunc = () => {
 			return ids.push(item.id);
 		});
 
-		return getTasksRequests(ids);
+		getTasksRequests(ids);
 	})
-	return getTasksRequests(ids);
-
 }
 
 var getTasksRequests = (ids) => {
