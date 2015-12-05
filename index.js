@@ -4,17 +4,17 @@ let requestUrls = require('./lib/request-urls.js');
 let authKeys = require('./lib/auth.js');
 
 
-var listsUrl = requestUrls.getRequestUrl('lists');
+let listsUrl = requestUrls.getRequestUrl('lists');
 
 // Request settings, example - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
-var requesBody = {
+let requesBody = {
 	url: listsUrl,
 	headers: authKeys
 };
 
-var ids = [];
+let ids = [];
 
-var getIdsRequstFunc = () => {
+let getIdsRequstFunc = () => {
 
 	request(requesBody, (error, response, body)=>{
 		if (error || response.statusCode !== 200) error ? console.error(error) : console.log('Status code = ' + resonse.response.statusCode + ' but must be == 200' );
@@ -28,11 +28,11 @@ var getIdsRequstFunc = () => {
 			return ids.push(item.id);
 		});
 
-		getTasksRequests(ids);
+		next(null ,ids);
 	})
 }
 
-var getTasksRequests = (ids) => {
+let getTasksRequests = (ids) => {
 
 	let tasksRequests = [];
 
@@ -41,11 +41,11 @@ var getTasksRequests = (ids) => {
 		tasksRequests.push(requestUrls.getRequestUrl('tasks', id));
 	})
 
-	getAllTaskst(tasksRequests)
+	next(null, tasksRequests)
 
 }
 
-var getAllTaskst = (tasksRequests) => {
+let getAllTaskst = (tasksRequests) => {
 
 	let requesBody = {};
 
@@ -67,6 +67,23 @@ var getAllTaskst = (tasksRequests) => {
 			})
 		})
 	})
+};
+
+//sync executing all the functions.
+let allFuncArray = [
+	getIdsRequstFunc,
+	getTasksRequests,
+	getAllTaskst
+];
+
+let next = (err, result) => {
+	if (err) { throw err };
+
+	let currentTask = allFuncArray.shift();
+
+	if (currentTask) {
+		currentTask(result);
+	};
 }
 
-getIdsRequstFunc();
+next();
