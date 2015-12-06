@@ -22,5 +22,8 @@
   "homepage": "https://github.com/campykid/bashlist#readme",
   "dependencies": {
     "request": "^2.65.0"
+  },
+  "devDependencies": {
+    "sync-request": "^2.1.0"
   }
 }
