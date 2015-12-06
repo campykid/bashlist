@@ -1,35 +1,26 @@
 'use strict';
-let request = require('request');
 let requestUrls = require('./lib/request-urls.js');
 let authKeys = require('./lib/auth.js');
-
-
+let syncRequest = require('sync-request');
 let listsUrl = requestUrls.getRequestUrl('lists');
 
 // Request settings, example - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
 let requesBody = {
 	url: listsUrl,
-	headers: authKeys
 };
 
-let ids = [];
-
 let getIdsRequstFunc = () => {
+	let ids = [];
+	let response = syncRequest('GET', requesBody.url, { 'headers': authKeys })
 
-	request(requesBody, (error, response, body)=>{
-		if (error || response.statusCode !== 200) error ? console.error(error) : console.log('Status code = ' + resonse.response.statusCode + ' but must be == 200' );
+	var parseAnswer = JSON.parse(response.getBody().toString())
 
-		// Parse the answer, getting array from objects-lists.
-		let answerJSON = JSON.parse(body);
-		let ids =[];
-
-		// Getting the array with ID from each list.
-		answerJSON.forEach((item) => {
-			return ids.push(item.id);
-		});
-
-		next(null ,ids);
+	parseAnswer.forEach((list) => {
+		ids.push(list.id)
 	})
+
+	next(null, ids)
+
 }
 
 let getTasksRequests = (ids) => {
@@ -45,35 +36,52 @@ let getTasksRequests = (ids) => {
 
 }
 
-let getAllTaskst = (tasksRequests) => {
+let getAllLinks = (tasksRequests) => {
 
 	let requesBody = {};
-
-	// Add in the request auth info.
-	requesBody.headers = authKeys;
+	let links = [];
 
 	tasksRequests.forEach((link) => {
+		links.push(link);
+	})
+	next(null, links);
+};
 
-		// Add url in the request.
-		requesBody.url = link;
+let getAllTitles = (links) => {
+	let allTitles = [];
+	let JSONAnswer = [];
 
+	links.forEach((link) => {
 		// Doing requst for all links.
-		request(requesBody, (error, response, body) => {
-			let responseJSON = JSON.parse(body);
+		var respond = syncRequest('GET', link, { 'headers': authKeys })
 
-			responseJSON.forEach((elem) => {
-				// Withdraw all the tasks in console.
-				process.stdout.write(elem.title + '\n');
-			})
+		JSONAnswer.push(JSON.parse(respond.getBody().toString()));
+	});
+
+
+
+	JSONAnswer.forEach((array) => {
+		array.forEach((task) => {
+			allTitles.push(task.title);
 		})
 	})
-};
+
+	next(null, allTitles);
+}
+
+let printToConsole = (allTitles) => {
+	allTitles.forEach((title) => {
+		process.stdout.write(title + '\n');
+	})
+}
 
 //sync executing all the functions.
 let allFuncArray = [
 	getIdsRequstFunc,
 	getTasksRequests,
-	getAllTaskst
+	getAllLinks,
+	getAllTitles,
+	printToConsole
 ];
 
 let next = (err, result) => {
