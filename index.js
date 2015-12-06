@@ -58,8 +58,6 @@ let getAllTitles = (links) => {
 		JSONAnswer.push(JSON.parse(respond.getBody().toString()));
 	});
 
-
-
 	JSONAnswer.forEach((array) => {
 		array.forEach((task) => {
 			allTitles.push(task.title);
@@ -69,10 +67,14 @@ let getAllTitles = (links) => {
 	next(null, allTitles);
 }
 
-let printToConsole = (allTitles) => {
-	allTitles.forEach((title) => {
-		process.stdout.write(title + '\n');
-	})
+let giveResult = (allTitles) => {
+	if (!module.parent) {
+		allTitles.forEach((title) => {
+			process.stdout.write(title + '\n');
+		})
+	} else {
+		module.exports = allTitles
+	}
 }
 
 //sync executing all the functions.
@@ -81,7 +83,7 @@ let allFuncArray = [
 	getTasksRequests,
 	getAllLinks,
 	getAllTitles,
-	printToConsole
+	giveResult
 ];
 
 let next = (err, result) => {
