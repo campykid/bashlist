@@ -4,14 +4,10 @@ let authKeys = require('./lib/auth.js');
 let syncRequest = require('sync-request');
 let listsUrl = requestUrls.getRequestUrl('lists');
 
-// Request settings, example - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
-let requesBody = {
-	url: listsUrl,
-};
-
 let getIdsRequstFunc = () => {
 	let ids = [];
-	let response = syncRequest('GET', requesBody.url, { 'headers': authKeys })
+	// The example an url - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
+	let response = syncRequest('GET', listsUrl, { 'headers': authKeys })
 
 	var parseAnswer = JSON.parse(response.getBody().toString())
 
