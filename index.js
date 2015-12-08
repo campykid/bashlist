@@ -9,14 +9,13 @@ let getIdsRequstFunc = () => {
 	// The example an url - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
 	let response = syncRequest('GET', listsUrl, { 'headers': authKeys })
 
-	var parseAnswer = JSON.parse(response.getBody().toString())
+	let parseAnswer = JSON.parse(response.getBody().toString())
 
 	parseAnswer.forEach((list) => {
 		ids.push(list.id)
 	})
 
 	next(null, ids)
-
 }
 
 let getTasksRequests = (ids) => {
@@ -29,7 +28,6 @@ let getTasksRequests = (ids) => {
 	})
 
 	next(null, tasksRequests)
-
 }
 
 let getAllLinks = (tasksRequests) => {
@@ -49,7 +47,7 @@ let getAllTitles = (links) => {
 
 	links.forEach((link) => {
 		// Doing requst for all links.
-		var respond = syncRequest('GET', link, { 'headers': authKeys })
+		let respond = syncRequest('GET', link, { 'headers': authKeys })
 
 		JSONAnswer.push(JSON.parse(respond.getBody().toString()));
 	});
