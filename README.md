@@ -8,4 +8,5 @@ node bashlist/index.js
 ```
 and you'll see all your wunderlist tasks. (You must be authorized on site https://www.wunderlist.com/)
 
-https://raw.githubusercontent.com/campykid/bashlist/master/bashlist.gif
+![bashlist](https://raw.githubusercontent.com/campykid/bashlist/master/bashlist.gif "bashlist")
+
