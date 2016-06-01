@@ -5,8 +5,6 @@ let syncRequest = require('sync-request');
 let listsUrl = requestUrls.getRequestUrl('lists');
 let co = require('co');
 
-
-
 co(function *(){
 	// yield any promise
 	let ids = yield new Promise((resolve, reject) => {
@@ -35,7 +33,6 @@ co(function *(){
 		console.log(request)
 	})
 })
-
 
 // let getIdsRequstFunc = () => {
 	// let ids = [];
