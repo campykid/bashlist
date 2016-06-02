@@ -6,7 +6,6 @@ let listsUrl = requestUrls.getRequestUrl('lists');
 let co = require('co');
 
 co(function *(){
-	// yield any promise
 	let ids = yield new Promise((resolve, reject) => {
 		let ids = [];
 		// The example an url - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
