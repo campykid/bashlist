@@ -5,8 +5,6 @@ let syncRequest = require('sync-request');
 let listsUrl = requestUrls.getRequestUrl('lists');
 let co = require('co');
 
-
-
 co(function *(){
 	// Getting all ids for  all tasks.
 	let ids = yield new Promise((resolve, reject) => {
@@ -24,7 +22,6 @@ co(function *(){
 		console.log(request)
 	})
 })
-
 
 // let getIdsRequstFunc = () => {
 	// let ids = [];
