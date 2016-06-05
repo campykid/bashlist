@@ -14,7 +14,9 @@ co(function *(){
 		let parseAnswer = JSON.parse(response.getBody().toString())
 		resolve(parseAnswer.map(list => list.id));
 	});
+	// Builds urls.
 	let urls = yield new Promise((resolve, reject) => resolve(ids.map(id => requestUrls.getRequestUrl('tasks', id))));
+	// Gets data.
 	let requests = yield new Promise((resolve, reject) => resolve(urls.map(url => syncRequest('GET', url, { 'headers': authKeys }).getBody().toString())));
 	return requests
 }).then(requests => {
