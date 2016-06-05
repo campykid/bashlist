@@ -8,30 +8,19 @@ let co = require('co');
 
 
 co(function *(){
-	// yield any promise
+	// Getting all ids for  all tasks.
 	let ids = yield new Promise((resolve, reject) => {
 		let ids = [];
 		// The example an url - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
 		let response = syncRequest('GET', listsUrl, { 'headers': authKeys })
-
 		let parseAnswer = JSON.parse(response.getBody().toString())
-
-		parseAnswer.forEach((list) => {
-			ids.push(list.id)
-		});
-		resolve(ids)
+		resolve(parseAnswer.map((list) => list.id));
 	});
-
-	let urls = yield new Promise((resolve, reject) => {
-		resolve(ids.map(id => requestUrls.getRequestUrl('tasks', id)))
-	});
-
-	let requsts = yield new Promise((resolve, reject) => {
-		resolve(urls.map(url => syncRequest('GET', url, { 'headers': authKeys }).getBody().toString()))
-	});
-	return requsts
-}).then(requsts => {
-	requsts.forEach(request => {
+	let urls = yield new Promise((resolve, reject) => resolve(ids.map(id => requestUrls.getRequestUrl('tasks', id))));
+	let requests = yield new Promise((resolve, reject) => resolve(urls.map(url => syncRequest('GET', url, { 'headers': authKeys }).getBody().toString())));
+	return requests
+}).then(requests => {
+	requests.forEach(request => {
 		console.log(request)
 	})
 })
