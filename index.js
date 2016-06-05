@@ -12,7 +12,7 @@ co(function *(){
 		// The example an url - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
 		let response = syncRequest('GET', listsUrl, { 'headers': authKeys })
 		let parseAnswer = JSON.parse(response.getBody().toString())
-		resolve(parseAnswer.map((list) => list.id));
+		resolve(parseAnswer.map(list => list.id));
 	});
 	let urls = yield new Promise((resolve, reject) => resolve(ids.map(id => requestUrls.getRequestUrl('tasks', id))));
 	let requests = yield new Promise((resolve, reject) => resolve(urls.map(url => syncRequest('GET', url, { 'headers': authKeys }).getBody().toString())));
