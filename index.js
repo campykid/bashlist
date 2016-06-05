@@ -19,9 +19,7 @@ co(function *(){
 	// Gets data.
 	let requests = yield new Promise((resolve, reject) => resolve(urls.map(url => syncRequest('GET', url, { 'headers': authKeys }).getBody().toString())));
 	return requests
-}).then(requests => {
-	requests.forEach(request => console.log(request))
-})
+}).then(requests => requests.forEach(request => console.log(request)));
 
 // let getIdsRequstFunc = () => {
 	// let ids = [];
