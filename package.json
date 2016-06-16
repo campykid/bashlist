@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "co": "^4.6.0",
+    "request": "^2.72.0",
     "sync-request": "^2.1.0"
   }
 }

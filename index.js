@@ -4,22 +4,20 @@ let authKeys = require('./lib/auth.js');
 let syncRequest = require('sync-request');
 let listsUrl = requestUrls.getRequestUrl('lists');
 let co = require('co');
+const request = require('request');
 
 co(function *(){
 	// Getting all ids for  all tasks.
-	let ids = yield new Promise((resolve, reject) => {
-		let ids = [];
-		// The example an url - https://a.wunderlist.com/api/v1/tasks?list_id=150029475
-		let response = syncRequest('GET', listsUrl, { 'headers': authKeys })
-		let parseAnswer = JSON.parse(response.getBody().toString())
-		resolve(parseAnswer.map(list => list.id));
-	});
+	let ids = yield new Promise((resolve, reject) => request.get({url: listsUrl, headers: authKeys}, (err, res, body) => resolve(JSON.parse(body).map(list => list.id))));
 	// Builds urls.
 	let urls = yield new Promise((resolve, reject) => resolve(ids.map(id => requestUrls.getRequestUrl('tasks', id))));
 	// Gets data.
 	let requests = yield new Promise((resolve, reject) => resolve(urls.map(url => syncRequest('GET', url, { 'headers': authKeys }).getBody().toString())));
 	return requests
 }).then(requests => requests.forEach(request => console.log(request)));
+
+
+// request.get({url: listsUrl, headers: authKeys}, (error, response, body) => resolve(JSON.parse(body).map(list => list.id)));
 
 // let getIdsRequstFunc = () => {
 	// let ids = [];
