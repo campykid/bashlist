@@ -8,11 +8,13 @@ const request = require('request');
 
 co(function *(){
 	// Getting all ids for  all tasks.
-	let ids = yield new Promise((resolve, reject) => request.get({url: listsUrl, headers: authKeys}, (err, res, body) => resolve(JSON.parse(body).map(list => list.id))));
+	let ids = yield new Promise((resolve, reject) => request.get({url: listsUrl, headers: authKeys},
+		(err, res, body) => resolve(JSON.parse(body).map(list => list.id))));
 	// Builds urls.
 	let urls = yield new Promise((resolve, reject) => resolve(ids.map(id => requestUrls.getRequestUrl('tasks', id))));
 	// Gets data.
-	let requests = yield new Promise((resolve, reject) => resolve(urls.map(url => syncRequest('GET', url, { 'headers': authKeys }).getBody().toString())));
+	let requests = yield new Promise((resolve, reject) => resolve(urls.map(url => syncRequest('GET', url,
+		{ 'headers': authKeys }).getBody().toString())));
 	return requests
 }).then(requests => requests.forEach(request => console.log(request)));
 
