@@ -1,22 +1,22 @@
 'use strict';
-let requestUrls = require('./lib/request-urls.js');
-let authKeys = require('./lib/auth.js');
-let syncRequest = require('sync-request');
-let listsUrl = requestUrls.getRequestUrl('lists');
-let co = require('co');
+const requestUrls = require('./lib/request-urls.js');
+const authKeys = require('./lib/auth.js');
+const syncRequest = require('sync-request');
+const listsUrl = requestUrls.getRequestUrl('lists');
+const co = require('co');
 const request = require('request');
 
 co(function *(){
 	// Getting all ids for  all tasks.
-	let ids = yield new Promise((resolve, reject) => request.get({url: listsUrl, headers: authKeys},
-		(err, res, body) => resolve(JSON.parse(body).map(list => list.id))));
+	const ids = yield new Promise((resolve, reject) => request.get({url: listsUrl, headers: authKeys},
+			(err, res, body) => resolve(JSON.parse(body).map(list => list.id))));
 	// Builds urls.
-	let urls = yield new Promise((resolve, reject) => resolve(ids.map(id => requestUrls.getRequestUrl('tasks', id))));
+	const urls = yield new Promise((resolve, reject) => resolve(ids.map(id => requestUrls.getRequestUrl('tasks', id))));
 	// Gets data.
-	let requests = yield new Promise((resolve, reject) => resolve(urls.map(url => syncRequest('GET', url,
-		{ 'headers': authKeys }).getBody().toString())));
+	const requests = yield new Promise((resolve, reject) => resolve(urls.map(url => syncRequest('GET', url,
+			{ 'headers': authKeys }).getBody().toString())));
 	return requests
-}).then(requests => requests.forEach(request => console.log(request)));
+}).then(requests => requests.forEach(answer => JSON.parse(answer).forEach(answer => console.log(answer.title))));
 
 
 // request.get({url: listsUrl, headers: authKeys}, (error, response, body) => resolve(JSON.parse(body).map(list => list.id)));
@@ -105,6 +105,6 @@ co(function *(){
 // 	if (currentTask) {
 // 		currentTask(result);
 // 	};
-// }
+
 
 // next();
