@@ -1,23 +1,58 @@
-'use strict';
 const requestUrls = require('./lib/request-urls.js');
 const authKeys = require('./lib/auth.js');
-const syncRequest = require('sync-request');
 const listsUrl = requestUrls.getRequestUrl('lists');
-const co = require('co');
-const request = require('request');
+const req = require('requisition');
+const ramda = require('ramda');
 
-co(function *(){
-	// Getting all ids for  all tasks.
-	const ids = yield new Promise((resolve, reject) => request.get({url: listsUrl, headers: authKeys},
-			(err, res, body) => resolve(JSON.parse(body).map(list => list.id))));
-	// Builds urls.
-	const urls = yield new Promise((resolve, reject) => resolve(ids.map(id => requestUrls.getRequestUrl('tasks', id))));
-	// Gets data.
-	const requests = yield new Promise((resolve, reject) => resolve(urls.map(url => syncRequest('GET', url,
-			{ 'headers': authKeys }).getBody().toString())));
-	return requests
-}).then(requests => requests.forEach(answer => JSON.parse(answer).forEach(answer => console.log(answer.title))));
+// =============================================  our days 2017 node version 8.0.0 (node-nightly) ===========================================
 
+async function getListsIds() {
+    const requestIists = await req(listsUrl).set(authKeys);
+    const lists = await requestIists.json();;
+    return lists.map(list => list.id);
+};
+
+async function buildReqUrls() {
+    const ids = await getListsIds();
+    return ids.map(id => requestUrls.getRequestUrl('tasks', id));
+};
+
+async function getAllLists() {
+    const urls = await buildReqUrls();
+    const requestAllLists = await Promise.all(urls.map(async url => await req(url).set(authKeys)));
+    return await Promise.all(requestAllLists.map(async list => await list.json()));
+};
+
+(async function showAllTasks(){
+    const lists = await getAllLists();
+    const tasks = ramda.flatten(lists.map(list => list.map(task => task.title)));
+    tasks.forEach(task => console.log(task))
+})();
+
+
+// =============================================  interim period 2016 node version 4.5 ===========================================
+
+//const co = require('co');
+//const syncRequest = require('sync-request');
+//co(function *(){
+//const request = require('request');
+	//// Getting all ids for  all tasks.
+	//const ids = yield new Promise((resolve, reject) => request.get({url: listsUrl, headers: authKeys},
+			//(err, res, body) => resolve(JSON.parse(body).map(list => list.id))));
+	//// Builds urls.
+	//const urls = yield new Promise((resolve, reject) => resolve(ids.map(id => requestUrls.getRequestUrl('tasks', id))));
+	//// Gets data.
+	//const requests = yield new Promise((resolve, reject) => resolve(urls.map(url => syncRequest('GET', url,
+			//{ 'headers': authKeys }).getBody().toString())));
+	//return requests
+//}).then(requests => requests.forEach(answer => JSON.parse(answer).forEach(answer => console.log(answer.title))));
+
+
+
+
+
+
+// ============================================= old style 2015 node version 0.12 ===========================================
 
 // request.get({url: listsUrl, headers: authKeys}, (error, response, body) => resolve(JSON.parse(body).map(list => list.id)));
 
